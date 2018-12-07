@@ -12,21 +12,15 @@ import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**
  * Mc360ScanPlugin
  */
 public class Mc360ScanPlugin implements MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
-    private BarcodeManager mBarcodeManager = new BarcodeManager();
-
-    private ScannerInfo mInfo = new ScannerInfo("se4710_cam_builtin", "DECODER_2D");
-    private Scanner mScanner = mBarcodeManager.getDevice(mInfo);
+    private Scanner mScanner;
 
     private EventChannel.EventSink mEventSink;
-
-    private PluginRegistry.Registrar registrar;
 
     private Scanner.DataListener mDataListener = new Scanner.DataListener() {
         @Override
@@ -41,12 +35,14 @@ public class Mc360ScanPlugin implements MethodChannel.MethodCallHandler, EventCh
         }
     };
 
-    private Mc360ScanPlugin(Registrar registrar) {
-        this.registrar = registrar;
+    private Mc360ScanPlugin() {
         try {
+            BarcodeManager mBarcodeManager = new BarcodeManager();
+            ScannerInfo mInfo = new ScannerInfo("se4710_cam_builtin", "DECODER_2D");
+            mScanner = mBarcodeManager.getDevice(mInfo);
             mScanner.enable();
             mScanner.addDataListener(mDataListener);
-        } catch (ScannerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -58,7 +54,7 @@ public class Mc360ScanPlugin implements MethodChannel.MethodCallHandler, EventCh
         final MethodChannel methodChannel = new MethodChannel(registrar.messenger(), "mc_360_scan/method_channel");
         final EventChannel eventChannel = new EventChannel(registrar.messenger(), "mc_360_scan/event_channel");
 
-        final Mc360ScanPlugin instance = new Mc360ScanPlugin(registrar);
+        final Mc360ScanPlugin instance = new Mc360ScanPlugin();
         methodChannel.setMethodCallHandler(instance);
         eventChannel.setStreamHandler(instance);
     }
