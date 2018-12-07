@@ -30,7 +30,6 @@ android {
 }
 
 dependencies {
-    compileOnly files('libs/flutter.jar')
     implementation files('libs/mediatek-android.jar')
     implementation files('libs/mediatek-compatibility.jar')
 }
