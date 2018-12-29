@@ -91,7 +91,9 @@ public class Mc360ScanPlugin implements MethodChannel.MethodCallHandler, EventCh
 
     private void stopScanning() {
         try {
-            mScanner.removeDataListener(mDataListener);
+            if (mDataListener != null) {
+                mScanner.removeDataListener(mDataListener);
+            }
             mScanner.cancelRead();
             if (mScanner.isEnable()) {
                 mScanner.disable();
@@ -109,6 +111,8 @@ public class Mc360ScanPlugin implements MethodChannel.MethodCallHandler, EventCh
 
     @Override
     public void onCancel(Object o) {
-        mScanner.removeDataListener(mDataListener);
+        if (mDataListener != null) {
+            mScanner.removeDataListener(mDataListener);
+        }
     }
 }
